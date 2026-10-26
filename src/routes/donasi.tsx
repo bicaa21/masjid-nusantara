@@ -5,7 +5,7 @@ import { programs, percent, rupiah } from "@/lib/data";
 import { Progress } from "@/components/site";
 
 export const Route = createFileRoute("/donasi")({
-  validateSearch: (s: Record<string, unknown>) => ({ program: typeof s.program === "string" ? s.program : undefined }),
+  validateSearch: (s: Record<string, unknown>): { program?: string } => ({ program: typeof s["program"] === "string" ? s["program"] : undefined }),
   head: () => ({
     meta: [
       { title: "Donasi — Masjid Nusantara" },
@@ -26,13 +26,13 @@ const amounts = [
 
 function Donasi() {
   const search = Route.useSearch();
-  const [slug, setSlug] = useState(search.program ?? programs[0].slug);
+  const [slug, setSlug] = useState(search.program ?? programs[0]!.slug);
   const [amount, setAmount] = useState<number>(50000);
   const [custom, setCustom] = useState("");
   const [method, setMethod] = useState<"qris" | "transfer">("qris");
   const [anon, setAnon] = useState(false);
   const [code, setCode] = useState<string | null>(null);
-  const p = programs.find((x) => x.slug === slug) ?? programs[0];
+  const p = programs.find((x) => x.slug === slug) ?? programs[0]!;
   const total = custom ? Number(custom.replace(/\D/g, "")) : amount;
 
   if (code)

@@ -6,10 +6,10 @@ import { PageBanner, ProgramRow } from "@/components/site";
 const PER_PAGE = 4;
 
 export const Route = createFileRoute("/program/")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    kategori: typeof s.kategori === "string" ? s.kategori : "Semua",
-    q: typeof s.q === "string" ? s.q : "",
-    page: Number(s.page) || 1,
+  validateSearch: (s: Record<string, unknown>): { kategori?: string; q?: string; page?: number } => ({
+    kategori: typeof s["kategori"] === "string" ? s["kategori"] : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
+    page: Number(s["page"]) || undefined,
   }),
   head: () => ({
     meta: [
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/program/")({
 });
 
 function ProgramPage() {
-  const { kategori, q, page } = Route.useSearch();
+  const { kategori = "Semua", q = "", page = 1 } = Route.useSearch();
   const navigate = useNavigate({ from: "/program/" });
   const filtered = programs.filter(
     (p) => (kategori === "Semua" || p.category === kategori) && p.title.toLowerCase().includes(q.toLowerCase()),

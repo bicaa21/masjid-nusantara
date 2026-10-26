@@ -18,7 +18,7 @@ export const Route = createFileRoute("/program/$slug")({
     ],
   }),
   notFoundComponent: () => <div className="p-16 text-center">Program tidak ditemukan.</div>,
-  errorComponent: ({ error }) => <div className="p-16 text-center">{error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-16 text-center">{String(error)}</div>,
   component: Detail,
 });
 
