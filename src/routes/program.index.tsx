@@ -6,7 +6,7 @@ import { PageBanner, ProgramRow } from "@/components/site";
 const PER_PAGE = 4;
 
 export const Route = createFileRoute("/program/")({
-  validateSearch: (s: Record<string, unknown>): { kategori?: string; q?: string; page?: number } => ({
+  validateSearch: (s: Record<string, unknown>): { kategori?: string | undefined; q?: string | undefined; page?: number | undefined } => ({
     kategori: typeof s["kategori"] === "string" ? s["kategori"] : undefined,
     q: typeof s["q"] === "string" ? s["q"] : undefined,
     page: Number(s["page"]) || undefined,

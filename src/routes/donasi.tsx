@@ -5,7 +5,7 @@ import { programs, percent, rupiah } from "@/lib/data";
 import { Progress } from "@/components/site";
 
 export const Route = createFileRoute("/donasi")({
-  validateSearch: (s: Record<string, unknown>): { program?: string } => ({ program: typeof s["program"] === "string" ? s["program"] : undefined }),
+  validateSearch: (s: Record<string, unknown>): { program?: string | undefined } => ({ program: typeof s["program"] === "string" ? s["program"] : undefined }),
   head: () => ({
     meta: [
       { title: "Donasi — Masjid Nusantara" },
