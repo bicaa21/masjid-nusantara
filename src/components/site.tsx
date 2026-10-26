@@ -48,7 +48,9 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-3 text-primary">
-          <Link to="/program" aria-label="Cari program"><Search className="h-5 w-5" /></Link>
+          <Link to="/program" aria-label="Cari program">
+            <Search className="h-5 w-5" />
+          </Link>
           <button aria-label="Menu" onClick={() => setOpen(!open)}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -57,7 +59,12 @@ export function SiteHeader() {
       {open && (
         <div className="border-t bg-card px-4 py-3">
           {[...nav, { to: "/kontak", label: "Kontak" } as const].map((n) => (
-            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block py-2 text-sm text-foreground">
+            <Link
+              key={n.to}
+              to={n.to}
+              onClick={() => setOpen(false)}
+              className="block py-2 text-sm text-foreground"
+            >
               {n.label}
             </Link>
           ))}
@@ -76,7 +83,9 @@ export function SiteFooter() {
         <p className="text-sm text-muted-foreground">
           Bersama Membangun Masjid • Menguatkan Umat • Menuju Indonesia yang Lebih Baik
         </p>
-        <Link to="/kontak" className="text-sm font-semibold text-primary md:ml-auto">Kontak Kami</Link>
+        <Link to="/kontak" className="text-sm font-semibold text-primary md:ml-auto">
+          Kontak Kami
+        </Link>
       </div>
     </footer>
   );
@@ -97,7 +106,12 @@ export function ProgramRow({ p }: { p: Program }) {
       params={{ slug: p.slug }}
       className="group flex items-center gap-5 border-b py-5 last:border-0"
     >
-      <img src={p.image} alt={p.title} loading="lazy" className="h-24 w-36 shrink-0 rounded-lg object-cover md:h-28 md:w-44" />
+      <img
+        src={p.image}
+        alt={p.title}
+        loading="lazy"
+        className="h-24 w-36 shrink-0 rounded-lg object-cover md:h-28 md:w-44"
+      />
       <div className="min-w-0 flex-1">
         <h3 className="font-sans text-base font-bold text-foreground">{p.title}</h3>
         <p className="mt-1 text-sm text-muted-foreground">{p.excerpt}</p>
@@ -105,7 +119,9 @@ export function ProgramRow({ p }: { p: Program }) {
           <MapPin className="h-3.5 w-3.5 text-gold" /> {p.location}
         </p>
         <div className="mt-2 flex items-center gap-2">
-          <div className="max-w-xs flex-1"><Progress value={percent(p)} /></div>
+          <div className="max-w-xs flex-1">
+            <Progress value={percent(p)} />
+          </div>
           <span className="text-xs font-semibold text-primary">{percent(p)}%</span>
         </div>
       </div>
@@ -114,7 +130,15 @@ export function ProgramRow({ p }: { p: Program }) {
   );
 }
 
-export function PageBanner({ title, subtitle, image }: { title: string; subtitle: string; image: string }) {
+export function PageBanner({
+  title,
+  subtitle,
+  image,
+}: {
+  title: string;
+  subtitle: string;
+  image: string;
+}) {
   return (
     <section className="relative overflow-hidden">
       <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -124,5 +148,32 @@ export function PageBanner({ title, subtitle, image }: { title: string; subtitle
         <p className="mt-3 max-w-md text-primary-foreground/85">{subtitle}</p>
       </div>
     </section>
+  );
+}
+
+export function DataLoading() {
+  return (
+    <p role="status" className="mx-auto max-w-6xl px-4 py-12 text-center text-muted-foreground">
+      Memuat data...
+    </p>
+  );
+}
+
+export function DataError({ error, reset }: { error: unknown; reset?: () => void }) {
+  console.error(error);
+  return (
+    <div role="alert" className="mx-auto max-w-2xl px-4 py-12 text-center">
+      <p className="text-sm text-destructive">
+        {error instanceof Error ? error.message : "Data gagal dimuat. Silakan coba lagi."}
+      </p>
+      {reset && (
+        <button
+          onClick={reset}
+          className="mt-4 rounded-full border px-4 py-2 text-sm font-semibold"
+        >
+          Coba lagi
+        </button>
+      )}
+    </div>
   );
 }

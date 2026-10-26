@@ -1,24 +1,28 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Heart, MapPin, Target, Wallet, User } from "lucide-react";
-import { programs, percent, rupiah } from "@/lib/data";
-import { Progress } from "@/components/site";
+import { percent, rupiah } from "@/lib/data";
+import { fetchProgram } from "@/lib/supabase-data";
+import { DataError, DataLoading, Progress } from "@/components/site";
 
 export const Route = createFileRoute("/program/$slug")({
   loader: async ({ params }) => {
-    const p = programs.find((x) => x.slug === params.slug);
+    const p = await fetchProgram(params.slug);
     if (!p) throw notFound();
     return p;
   },
+  pendingComponent: DataLoading,
+  errorComponent: DataError,
   head: ({ loaderData }) => ({
     meta: [
-      { title: loaderData ? `${loaderData.title} — Masjid Nusantara` : "Program — Masjid Nusantara" },
+      {
+        title: loaderData ? `${loaderData.title} — Masjid Nusantara` : "Program — Masjid Nusantara",
+      },
       { name: "description", content: loaderData?.excerpt ?? "Detail program Masjid Nusantara." },
       { property: "og:title", content: loaderData?.title ?? "Program Masjid Nusantara" },
       { property: "og:description", content: loaderData?.excerpt ?? "Detail program." },
     ],
   }),
   notFoundComponent: () => <div className="p-16 text-center">Program tidak ditemukan.</div>,
-  errorComponent: ({ error }) => <div className="p-16 text-center">{String(error)}</div>,
   component: Detail,
 });
 
@@ -29,18 +33,30 @@ function Detail() {
     <div className="mx-auto max-w-4xl px-4 py-6">
       <div className="relative overflow-hidden rounded-2xl">
         <img src={p.image} alt={p.title} className="aspect-[16/8] w-full object-cover" />
-        <Link to="/program" className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-xs font-semibold text-gold-foreground">
+        <Link
+          to="/program"
+          className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-xs font-semibold text-gold-foreground"
+        >
           <ArrowLeft className="h-4 w-4" /> {p.category}
         </Link>
-        <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-card text-primary"><Heart className="h-5 w-5" /></span>
+        <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-card text-primary">
+          <Heart className="h-5 w-5" />
+        </span>
       </div>
       <h1 className="mt-6 text-3xl font-bold">{p.title}</h1>
-      <p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-4 w-4" /> {p.location}</p>
+      <p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
+        <MapPin className="h-4 w-4" /> {p.location}
+      </p>
 
       <div className="mt-6">
-        <div className="mb-2 flex justify-between text-sm font-semibold"><span>Progress Penggalangan Dana</span><span>{pct}%</span></div>
+        <div className="mb-2 flex justify-between text-sm font-semibold">
+          <span>Progress Penggalangan Dana</span>
+          <span>{pct}%</span>
+        </div>
         <Progress value={pct} />
-        <p className="mt-2 text-xs text-muted-foreground">Progress pembangunan fisik: {p.buildProgress}%</p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Progress pembangunan fisik: {p.buildProgress}%
+        </p>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -51,7 +67,10 @@ function Detail() {
         ].map(({ icon: I, l, v }) => (
           <div key={l} className="flex items-center gap-3 rounded-xl border bg-card p-4">
             <I className="h-6 w-6 text-primary" strokeWidth={1.5} />
-            <div><div className="text-xs text-muted-foreground">{l}</div><div className="text-sm font-bold">{v}</div></div>
+            <div>
+              <div className="text-xs text-muted-foreground">{l}</div>
+              <div className="text-sm font-bold">{v}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -69,7 +88,11 @@ function Detail() {
         ))}
       </ol>
 
-      <Link to="/donasi" search={{ program: p.slug }} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gold py-3.5 font-semibold text-gold-foreground shadow-soft">
+      <Link
+        to="/donasi"
+        search={{ program: p.slug }}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gold py-3.5 font-semibold text-gold-foreground shadow-soft"
+      >
         Donasi Sekarang <ArrowRight className="h-4 w-4" />
       </Link>
     </div>
