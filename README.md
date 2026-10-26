@@ -25,3 +25,35 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Supabase setup
+
+1. Install dependencies and create a local environment file:
+
+   ```powershell
+   npm install
+   Copy-Item .env.example .env
+   ```
+
+   Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `.env`. Use only the project's publishable/anon key in this frontend; never put a `service_role` or secret key in a `VITE_*` variable.
+
+2. Install the Supabase CLI using its [official installation instructions](https://supabase.com/docs/guides/cli), then run these commands from the repository root:
+
+   ```powershell
+   supabase init
+   supabase login
+   supabase link --project-ref xxxx
+   supabase db push
+   ```
+
+   `supabase init` creates the local CLI configuration, `login` authenticates the CLI, `link` associates this folder with your project, and `db push` applies the reviewed migrations in `supabase/migrations`.
+
+3. Generate TypeScript types from the linked project's schema:
+
+   ```powershell
+   supabase gen types typescript --linked | Out-File -Encoding utf8 src\integrations\supabase\types.ts
+   ```
+
+   The checked-in types currently match the initial migration. Regenerate them after applying migrations or changing the database schema.
+
+The initial migration seeds the existing program and news content. Program/news reads are limited to published rows. Donation submissions use a database function that always creates a pending record and returns its receipt code; donor details are not publicly readable. Contact messages are insert-only for visitors. Payment-provider checkout and an authenticated admin experience are not part of this integration, so pending donations still require trusted manual verification.
