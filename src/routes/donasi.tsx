@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Copy, MapPin } from "lucide-react";
 import { useState } from "react";
-import { programs, percent, rupiah } from "@/lib/data";
+import { donationAccounts, percent, programs, rupiah } from "@/lib/data";
 import { Progress } from "@/components/site";
 
 export const Route = createFileRoute("/donasi")({
@@ -32,6 +32,12 @@ function Donasi() {
   const [method, setMethod] = useState<"qris" | "transfer">("qris");
   const [anon, setAnon] = useState(false);
   const [code, setCode] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const copyNumber = (n: string) => {
+    navigator.clipboard?.writeText(n).catch(() => {});
+    setCopied(n);
+    setTimeout(() => setCopied((c) => (c === n ? null : c)), 2000);
+  };
   const p = programs.find((x) => x.slug === slug) ?? programs[0]!;
   const total = custom ? Number(custom.replace(/\D/g, "")) : amount;
 
@@ -108,6 +114,31 @@ function Donasi() {
           </button>
         ))}
       </div>
+
+      {method === "transfer" && (
+        <div className="mt-3 space-y-2 rounded-xl border bg-card p-4">
+          <p className="text-xs text-muted-foreground">
+            Transfer ke salah satu rekening resmi yayasan di bawah ini, lalu donasi Anda akan diverifikasi manual oleh admin.
+          </p>
+          {donationAccounts.map((a) => (
+            <div key={a.number} className="flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2">
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-bold">{a.bank}</div>
+                <div className="font-mono text-sm tracking-wider text-foreground">{a.number}</div>
+                <div className="text-[11px] text-muted-foreground">a.n. Yayasan Masjid Nusantara</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => copyNumber(a.number)}
+                className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted"
+              >
+                {copied === a.number ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied === a.number ? "Disalin" : "Salin"}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground">
         Lanjutkan Pembayaran {total > 0 && `· ${rupiah(total)}`} <ArrowRight className="h-4 w-4" />

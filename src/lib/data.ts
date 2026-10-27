@@ -131,6 +131,16 @@ export const categories: { label: string; value: "Semua" | Category }[] = [
 export const percent = (p: Program) => Math.min(100, Math.round((p.raised / p.target) * 100));
 export const rupiah = (n: number) => "Rp " + n.toLocaleString("id-ID");
 
+export const donationAccounts = [
+  { bank: "Bank Syariah Indonesia (BSI)", number: "7066116616" },
+  { bank: "Bank Mandiri", number: "1310010933135" },
+  { bank: "BCA", number: "4373333151" },
+  { bank: "Bank Muamalat", number: "1080005817" },
+  { bank: "BRI", number: "110701000246304" },
+  { bank: "BJB", number: "1000100010000" },
+  { bank: "CIMB Niaga Syariah", number: "860005087400" },
+];
+
 export const news = [
   { title: "Peletakan batu pertama Masjid Pelosok Sumbawa", date: "01 Agu 2026", image: hero, excerpt: "Warga dan relawan bergotong royong memulai pembangunan masjid pertama di desa." },
   { title: "Renovasi musholla Al-Ikhlas memasuki tahap atap", date: "05 Okt 2026", image: renovasi, excerpt: "Rangka atap lama yang lapuk diganti dengan material baru yang lebih kokoh." },
