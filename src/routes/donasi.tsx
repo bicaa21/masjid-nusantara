@@ -29,7 +29,6 @@ function Donasi() {
   const [slug, setSlug] = useState(search.program ?? programs[0]!.slug);
   const [amount, setAmount] = useState<number>(50000);
   const [custom, setCustom] = useState("");
-  const [method, setMethod] = useState<"qris" | "transfer">("qris");
   const [anon, setAnon] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -47,7 +46,7 @@ function Donasi() {
         <h1 className="text-2xl font-bold">Donasi Tercatat</h1>
         <p className="mt-3 text-muted-foreground">Kode transaksi: <b className="text-foreground">{code}</b></p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Status: <span className="rounded-full bg-accent px-2 py-0.5 font-semibold text-accent-foreground">Pending</span>. Donasi {rupiah(total)} akan diverifikasi setelah pembayaran dikonfirmasi oleh {method === "qris" ? "penyedia QRIS" : "admin"}.
+          Status: <span className="rounded-full bg-accent px-2 py-0.5 font-semibold text-accent-foreground">Pending</span>. Donasi {rupiah(total)} akan diverifikasi setelah pembayaran dikonfirmasi oleh admin.
         </p>
         <Link to="/program" className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Lihat Program Lain</Link>
       </div>
@@ -103,24 +102,22 @@ function Donasi() {
 
       <h2 className="mt-6 font-sans text-sm font-bold">Metode Pembayaran</h2>
       <div className="mt-3 space-y-3">
-        {[
-          { id: "qris" as const, t: "QRIS", d: "Scan QRIS melalui GoPay, OVO, DANA, ShopeePay, dan aplikasi e-wallet lainnya." },
-          { id: "transfer" as const, t: "Transfer Bank", d: "Transfer ke rekening yayasan, diverifikasi manual oleh admin." },
-        ].map((m) => (
-          <button type="button" key={m.id} onClick={() => setMethod(m.id)} className={`flex w-full items-center gap-4 rounded-xl border bg-card p-4 text-left ${method === m.id ? "border-gold" : ""}`}>
-            <span className="font-sans text-lg font-black text-foreground">{m.t}</span>
-            <span className="flex-1 text-xs text-muted-foreground">{m.d}</span>
-            {method === m.id && <Check className="h-5 w-5 rounded-full bg-gold p-0.5 text-gold-foreground" />}
-          </button>
-        ))}
+        <div className="flex w-full items-center gap-4 rounded-xl border border-gold bg-card p-4 text-left">
+          <span className="font-sans text-lg font-black text-foreground">Transfer Bank</span>
+          <span className="flex-1 text-xs text-muted-foreground">Transfer ke rekening yayasan, diverifikasi manual oleh admin.</span>
+          <Check className="h-5 w-5 rounded-full bg-gold p-0.5 text-gold-foreground" />
+        </div>
+        <div aria-disabled="true" className="flex w-full items-center gap-4 rounded-xl border bg-card/60 p-4 text-left opacity-50">
+          <span className="font-sans text-lg font-black text-foreground">QRIS</span>
+          <span className="flex-1 text-xs text-muted-foreground">Scan QRIS melalui GoPay, OVO, DANA, ShopeePay, dan aplikasi e-wallet lainnya.</span>
+          <span className="shrink-0 rounded-full border px-3 py-1 text-[11px] font-semibold text-muted-foreground">Belum Tersedia</span>
+        </div>
       </div>
 
-      <div className={`mt-3 space-y-2 rounded-xl border bg-card p-4 ${method === "transfer" ? "border-gold" : ""}`}>
+      <div className="mt-3 space-y-2 rounded-xl border border-gold bg-card p-4">
         <div className="font-sans text-sm font-bold">Rekening Donasi</div>
         <p className="text-xs text-muted-foreground">
-          {method === "transfer"
-            ? "Transfer ke salah satu rekening resmi yayasan di bawah ini, lalu donasi Anda akan diverifikasi manual oleh admin."
-            : "Selain QRIS, donasi juga bisa ditransfer ke rekening resmi yayasan berikut."}
+          Transfer ke salah satu rekening resmi yayasan di bawah ini, lalu donasi Anda akan diverifikasi manual oleh admin.
         </p>
         {donationAccounts.map((a) => (
           <div key={a.number} className="flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2">
