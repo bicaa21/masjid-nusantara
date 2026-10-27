@@ -115,30 +115,32 @@ function Donasi() {
         ))}
       </div>
 
-      {method === "transfer" && (
-        <div className="mt-3 space-y-2 rounded-xl border bg-card p-4">
-          <p className="text-xs text-muted-foreground">
-            Transfer ke salah satu rekening resmi yayasan di bawah ini, lalu donasi Anda akan diverifikasi manual oleh admin.
-          </p>
-          {donationAccounts.map((a) => (
-            <div key={a.number} className="flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2">
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold">{a.bank}</div>
-                <div className="font-mono text-sm tracking-wider text-foreground">{a.number}</div>
-                <div className="text-[11px] text-muted-foreground">a.n. Yayasan Masjid Nusantara</div>
-              </div>
-              <button
-                type="button"
-                onClick={() => copyNumber(a.number)}
-                className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted"
-              >
-                {copied === a.number ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                {copied === a.number ? "Disalin" : "Salin"}
-              </button>
+      <div className={`mt-3 space-y-2 rounded-xl border bg-card p-4 ${method === "transfer" ? "border-gold" : ""}`}>
+        <div className="font-sans text-sm font-bold">Rekening Donasi</div>
+        <p className="text-xs text-muted-foreground">
+          {method === "transfer"
+            ? "Transfer ke salah satu rekening resmi yayasan di bawah ini, lalu donasi Anda akan diverifikasi manual oleh admin."
+            : "Selain QRIS, donasi juga bisa ditransfer ke rekening resmi yayasan berikut."}
+        </p>
+        {donationAccounts.map((a) => (
+          <div key={a.number} className="flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2">
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold">{a.bank}</div>
+              <div className="font-mono text-sm tracking-wider text-foreground">{a.number}</div>
+              <div className="text-[11px] text-muted-foreground">a.n. Yayasan Masjid Nusantara</div>
             </div>
-          ))}
-        </div>
-      )}
+            <button
+              type="button"
+              onClick={() => copyNumber(a.number)}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted"
+            >
+              {copied === a.number ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied === a.number ? "Disalin" : "Salin"}
+            </button>
+          </div>
+        ))}
+      </div>
+
 
       <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground">
         Lanjutkan Pembayaran {total > 0 && `· ${rupiah(total)}`} <ArrowRight className="h-4 w-4" />
